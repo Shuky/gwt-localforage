@@ -15,7 +15,9 @@ import com.google.gwt.junit.client.GWTTestCase;
  */
 public class GwtTestLocalForage extends GWTTestCase {
 
-  /**
+    public static final int TIMEOUT_MILLIS = 10000;
+
+    /**
    * Must refer to a valid module that sources this class.
    */
   public String getModuleName() {
@@ -26,21 +28,18 @@ public class GwtTestLocalForage extends GWTTestCase {
    * Tests the localForage.
    */
   public void testLocalForage() {
-//	  final LocalForage localForage = GWT.create(LocalForage.class);
-//	  localForage.setItemAsync("key1", "value1", new LocalForageCallback() {
-//		
-//		@Override
-//		public void onComplete(boolean error, String value) {
-//			assertEquals(value, "value1");
-//			localForage.getItemAsync("key1", new LocalForageCallback() {
-//				
-//				@Override
-//				public void onComplete(boolean error, String value) {
-//					assertEquals(value, "value1");
-//				}
-//			});
-//		}
-//	});
+	  final LocalForage localForage = GWT.create(LocalForage.class);
+      assertTrue(localForage.isSupported());
+      assertTrue(localForage.isLoaded());
+	  localForage.setItemAsync("key1", "value1", new LocalForageCallback() {
+
+		@Override
+		public void onComplete(boolean error, String value) {
+            assertEquals(value, "value1");
+            finishTest();
+        }
+	});
+    delayTestFinish(TIMEOUT_MILLIS);
   }
 
 
