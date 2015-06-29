@@ -31,7 +31,7 @@ public class GwtTestLocalForage extends GWTTestCase {
 	  final LocalForage localForage = GWT.create(LocalForage.class);
       assertTrue(localForage.isSupported());
       assertTrue(localForage.isLoaded());
-	  localForage.setItemAsync("key1", "value1", new LocalForageCallback() {
+	  localForage.setItem("key1", "value1", new LocalForageCallback() {
 
 		@Override
 		public void onComplete(boolean error, String value) {
