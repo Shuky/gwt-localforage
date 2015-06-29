@@ -7,12 +7,9 @@ public class LocalForage {
 	static {
 		if (!isLoaded()) {
 			load();
-			//configStoreName("STOREE");
 		}
 	}
 
-	
-	
 	public static void fireCallback(LocalForageCallback callback, Boolean err, String value) {
 		if (callback == null) {
 			return;
@@ -25,43 +22,43 @@ public class LocalForage {
 		fireCallback(callback, null, null);
 	}
 
-	public native void setItemAsync(String key, String value, LocalForageCallback callback) /*-{
+	public native void setItem(String key, String value, LocalForageCallback callback) /*-{
 		var callbackFn = $entry(function(err, val) {
 			@us.storee.gwt.libs.localforage.client.LocalForage::fireCallback(Lus/storee/gwt/libs/localforage/client/LocalForageCallback;Ljava/lang/Boolean;Ljava/lang/String;)(callback, err, val);
 		});
 		$wnd.localforage.setItem(key, value, callbackFn);
 	}-*/;
 
-	public native void setItemAsync(String key, String value) /*-{
+	public native void setItem(String key, String value) /*-{
 		$wnd.localforage.setItem(key, value);
 	}-*/;
 
-	public native void getItemAsync(String key, LocalForageCallback callback) /*-{
+	public native void getItem(String key, LocalForageCallback callback) /*-{
 		var callbackFn = $entry(function(err, val) {
 			@us.storee.gwt.libs.localforage.client.LocalForage::fireCallback(Lus/storee/gwt/libs/localforage/client/LocalForageCallback;Ljava/lang/Boolean;Ljava/lang/String;)(callback, err, val)
 		});
 		$wnd.localforage.getItem(key, callbackFn);
 	}-*/;
 
-	public native void removeItemAsync(String key, LocalForageCallback callback) /*-{
+	public native void removeItem(String key, LocalForageCallback callback) /*-{
 		var callbackFn = $entry(function(err, val) {
 			@us.storee.gwt.libs.localforage.client.LocalForage::fireCallback(Lus/storee/gwt/libs/localforage/client/LocalForageCallback;Ljava/lang/Boolean;Ljava/lang/String;)(callback, err, val)
 		});
 		$wnd.localforage.removeItem(key, callbackFn);
 	}-*/;
 
-	public native void removeItemAsync(String key) /*-{
+	public native void removeItem(String key) /*-{
 		$wnd.localforage.removeItem(key);
 	}-*/;
 
-	public native void clearAsync(LocalForageCallback callback) /*-{
+	public native void clear(LocalForageCallback callback) /*-{
 		var callbackFn = $entry(function(val) {
 			@us.storee.gwt.libs.localforage.client.LocalForage::fireCallback(Lus/storee/gwt/libs/localforage/client/LocalForageCallback;)(callback);
 		});
 		$wnd.localforage.clear(callbackFn);
 	}-*/;
 
-	public native void clearAsync() /*-{
+	public native void clear() /*-{
 		$wnd.localforage.clear();
 	}-*/;
 
