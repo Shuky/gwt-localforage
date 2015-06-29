@@ -21,7 +21,7 @@ public class GwtTestLocalForage extends GWTTestCase {
    * Must refer to a valid module that sources this class.
    */
   public String getModuleName() {
-    return "us.storee.gwt.libs.localforage.LocalForageJUnit";
+    return "us.storee.gwt.libs.localforage.LocalForageJUnitTests";
   }
 
   /**
