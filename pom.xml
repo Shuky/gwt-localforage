@@ -84,8 +84,30 @@
                     <modules>
                         <module>us.storee.gwt.libs.localforage.LocalForage</module>
                     </modules>
+                    <mode>htmlunit</mode>
+                    <includes>**/GwtTest*.java</includes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.12</version>
+                <executions>
+                    <execution>
+                        <id>ExecuteTests</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/GwtTest*.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
         <resources>
             <resource>
