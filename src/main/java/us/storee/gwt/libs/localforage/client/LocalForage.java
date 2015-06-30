@@ -1,5 +1,6 @@
 package us.storee.gwt.libs.localforage.client;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.core.shared.GWT;
@@ -42,9 +43,9 @@ public class LocalForage {
         successCallback.onComplete(err, value);
     }
 
-    static void fireInteratorCallback(LocalForageIteratorCallback localForageIteratorCallback, String value, String key, String iterationNumber) {
+    static JavaScriptObject fireInteratorCallback(LocalForageIteratorCallback localForageIteratorCallback, String value, String key, String iterationNumber) {
         if (value instanceof String && value.equals("null")) value = null;
-        localForageIteratorCallback.iteratorCallback(value, key, Integer.valueOf(iterationNumber));
+        return localForageIteratorCallback.iteratorCallback(value, key, Integer.valueOf(iterationNumber));
     }
 
     static void fireCallbackString(LocalForageCallback successCallback, Boolean err, String value) {
@@ -134,21 +135,34 @@ public class LocalForage {
 
     /**
      * Iterate over all value/key pairs in datastore.
-     * **WARNING** Not working as expected, only gets first iteration, subsequent fail
+     * ** WARNING** note that instead of returning undefined to continue, return null instead, if return value is not null, iteration is halted.
+     * iterate supports early exit by returning non undefined value inside iteratorCallback callback. Resulting value will be passed to successCallback as the result of iteration.
      *
      * @param localForageIteratorCallback
      * @param successCallback
      * @Deprecated
      */
     public native void iterate(LocalForageIteratorCallback localForageIteratorCallback, LocalForageCallback<String[]> successCallback) /*-{
-        var iteratorCallbackFn = $entry(function (value, key, iterationNumber) {
-            @us.storee.gwt.libs.localforage.client.LocalForage::fireInteratorCallback(Lus/storee/gwt/libs/localforage/client/LocalForageIteratorCallback;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(localForageIteratorCallback, value, key, iterationNumber + "");
-        });
+
 
         var successCallbackFn = $entry(function (err, keys) {
             @us.storee.gwt.libs.localforage.client.LocalForage::fireCallbackArrayStr(Lus/storee/gwt/libs/localforage/client/LocalForageCallback;Ljava/lang/Boolean;Lcom/google/gwt/core/client/JsArrayString;)(successCallback, err, keys);
         });
-        $wnd.localforage.iterate(iteratorCallbackFn, successCallbackFn);
+        // Notice that the reference to the exported method has been wrapped in a call to the $entry function. This implicitly-defined function ensures that the Java-derived method is executed with the uncaught exception handler installed and pumps a number of other utility services. The $entry function is reentrant-safe and should be used anywhere that GWT-derived JavaScript may be called into from a non-GWT context.
+        // Sourcehttp://www.gwtproject.org/doc/latest/DevGuideCodingBasicsJSNI.html
+        // $entry ensures all undefined return values are converted to null a key part of preserving contract for java calls for javascript functions -> https://code.google.com/p/google-web-toolkit/wiki/NullIsUndefined
+        var iteratorCallbackFn = $entry(function (value, key, iterationNumber) {
+            return @us.storee.gwt.libs.localforage.client.LocalForage::fireInteratorCallback(Lus/storee/gwt/libs/localforage/client/LocalForageIteratorCallback;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(localForageIteratorCallback, value, key, iterationNumber + "");
+        });
+        $wnd.localforage.iterate(
+            function(v,k,i){
+                var n = iteratorCallbackFn(v,k,i);
+                // since GWT cannot handle returning undefined https://code.google.com/p/google-web-toolkit/wiki/NullIsUndefined
+                // test for null and return undefined instead, hence preserving the intention of the class, but not the exact contract
+                if(n === null) { return undefined;}
+                else return n;
+            }
+            , successCallbackFn)
     }-*/;
 
     public native boolean isSupported() /*-{

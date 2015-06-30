@@ -183,46 +183,53 @@ public class GwtTestLocalForage extends GWTTestCase {
                     @Override
                     public void onComplete(boolean error, String value) {
                         assertEquals(value, "value1");
-                        localForage.setItem("key2", "value2", new LocalForageCallback() {
+                        localForage.setItem("key2", "value2", new LocalForageCallback<String>() {
                             @Override
-                            public void onComplete(boolean error, final Object value) {
+                            public void onComplete(boolean error, final String value) {
                                 assertFalse(error);
                                 localForage.length(new LocalForageCallback<Integer>() {
                                     @Override
                                     public void onComplete(boolean error, Integer value) {
                                         assertEquals(2, (int) value);
-                                        localForage.iterate(new LocalForageIteratorCallback() {
+                                        localForage.setItem("key3", "value3", new LocalForageCallback() {
                                             @Override
-                                            public JavaScriptObject iteratorCallback(String value, String key, Integer iterationNumber) {
-                                                System.out.println("iterationNumber: " + iterationNumber);
-
-                                                switch (iterationNumber) {
-                                                    case 1:
-                                                        assertEquals("key1", key);
-                                                        System.out.println("First run");
-                                                        countOfIteration[0]++;
-                                                        assertEquals(1, countOfIteration[0]);
-                                                        return null;
-                                                    case 2:
-                                                        System.out.println("Second run");
-                                                        assertEquals("key2", key);
-                                                        countOfIteration[0]++;
-                                                        assertEquals(2, countOfIteration[0]);
-                                                        finishTest();
-                                                        return null;
-                                                    default:
-                                                        fail();
-                                                        finishTest();
-                                                        break;
-                                                }
-                                                return null;
-                                            }
-                                        }, new LocalForageCallback<String[]>() {
-                                            @Override
-                                            public void onComplete(boolean error, String[] value) {
+                                            public void onComplete(boolean error, Object value) {
                                                 assertFalse(error);
-                                                assertEquals(2, countOfIteration[0]);
-                                                System.out.println(Arrays.toString(value));
+                                                localForage.iterate(new LocalForageIteratorCallback() {
+                                                    @Override
+                                                    public JavaScriptObject iteratorCallback(String value, String key, Integer iterationNumber) {
+                                                        System.out.println("iterationNumber: " + iterationNumber);
+                                                        JavaScriptObject javaScriptObject = null;
+                                                        assertTrue(iterationNumber < 3);
+                                                        switch (iterationNumber) {
+                                                            case 1:
+                                                                assertEquals("key1", key);
+                                                                System.out.println("First run");
+                                                                countOfIteration[0]++;
+                                                                assertEquals(1, countOfIteration[0]);
+                                                                break;
+                                                            case 2:
+                                                                System.out.println("Second run");
+                                                                assertEquals("key2", key);
+                                                                countOfIteration[0]++;
+                                                                assertEquals(2, countOfIteration[0]);
+                                                                javaScriptObject = getEmptyArray();
+                                                                break;
+                                                            default:
+                                                                fail();
+                                                                break;
+                                                        }
+                                                        return javaScriptObject;
+                                                    }
+                                                }, new LocalForageCallback<String[]>() {
+                                                    @Override
+                                                    public void onComplete(boolean error, String[] value) {
+                                                        assertFalse(error);
+                                                        assertEquals(2, countOfIteration[0]);
+                                                        System.out.println(Arrays.toString(value));
+                                                        finishTest();
+                                                    }
+                                                });
                                             }
                                         });
                                     }
@@ -235,5 +242,9 @@ public class GwtTestLocalForage extends GWTTestCase {
             }
         });
         delayTestFinish(TIMEOUT_MILLIS);
+    }
+
+    private JavaScriptObject getEmptyArray() {
+        return JsArrayString.createArray(0);
     }
 }
