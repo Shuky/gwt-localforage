@@ -149,7 +149,7 @@ public class LocalForage {
             @us.storee.gwt.libs.localforage.client.LocalForage::fireCallbackArrayStr(Lus/storee/gwt/libs/localforage/client/LocalForageCallback;Ljava/lang/Boolean;Lcom/google/gwt/core/client/JsArrayString;)(successCallback, err, keys);
         });
         // Notice that the reference to the exported method has been wrapped in a call to the $entry function. This implicitly-defined function ensures that the Java-derived method is executed with the uncaught exception handler installed and pumps a number of other utility services. The $entry function is reentrant-safe and should be used anywhere that GWT-derived JavaScript may be called into from a non-GWT context.
-        // Sourcehttp://www.gwtproject.org/doc/latest/DevGuideCodingBasicsJSNI.html
+        // Source http://www.gwtproject.org/doc/latest/DevGuideCodingBasicsJSNI.html
         // $entry ensures all undefined return values are converted to null a key part of preserving contract for java calls for javascript functions -> https://code.google.com/p/google-web-toolkit/wiki/NullIsUndefined
         var iteratorCallbackFn = $entry(function (value, key, iterationNumber) {
             return @us.storee.gwt.libs.localforage.client.LocalForage::fireInteratorCallback(Lus/storee/gwt/libs/localforage/client/LocalForageIteratorCallback;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(localForageIteratorCallback, value, key, iterationNumber + "");
